@@ -1,0 +1,8 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  border: 1px solid red;
+  background-image: url("https://img.freepik.com/premium-psd/abstract-background_69089-33.jpg?semt=ais_hybrid");
+  background-size: cover;
+  background-position: center;
+}
