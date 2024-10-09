@@ -1,23 +1,45 @@
+import * as React from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import FormLabel from '@mui/material/FormLabel';
 import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+// import Visibility from '@mui/icons-material/Visibility';
+// import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import { useState } from 'react';
 
 export default function SignUp() {
-
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [show, setShow] = useState(false);
 
     const [alertMessage, setAlertMessage] = useState('');
     const [alertSeverity, setAlertSeverity] = useState('');
 
     const [image, setImage] = useState(null);
+    const [pic, setPic] = useState();
+
+
+
+    const [showPassword, setShowPassword] = React.useState(false);
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
+
+    const handleMouseUpPassword = (event) => {
+        event.preventDefault();
+    };
+
 
     const handleName = (e) => {
         setName(e.target.value);
@@ -130,14 +152,12 @@ export default function SignUp() {
                 <br />
                 <TextField value={confirmPassword} onChange={handleConfirmPassword} id="confirmPassword" label="Confirm Password" variant="outlined" type='password' fullWidth required />
             </Box>
-
             
-            {/* <Box sx={{ mb: 2 }}>
+            <Box sx={{ mb: 2 }}>
                 <FormLabel htmlFor="pic">Profile Picture</FormLabel>
                 <br />
-                <TextField id="pic" variant="outlined" type='file' accept="image/*" onChange={handleFile} fullWidth />
-            </Box> */}
-
+                <TextField id="pic" variant="outlined" type='file' onChange={(e) => postDetails(e.target.files[0])} fullWidth required />
+            </Box>
             <Button variant="contained" type='submit' fullWidth>Sign Up</Button>
         </Box>
     );

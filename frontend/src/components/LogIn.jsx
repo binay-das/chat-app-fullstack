@@ -98,6 +98,7 @@ export default function LogIn({ handleLogIn }) {
             </Box>
 
             <Button variant="contained" type='submit' fullWidth>Log In</Button>
+            <Button sx={{mt: 1}} variant="contained" onClick={() => {setEmail('guest@example.com'); setPassword('123456')}} fullWidth>Guest User</Button>
         </Box>
     );
 }
