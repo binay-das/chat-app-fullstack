@@ -8,6 +8,7 @@ const { notFound, errorHandler } = require('./middlewares/errorMiddlewares');
 connectToDB();
 app.use(express.json());
 app.use('/api/user', userRoutes);
+app.use('/api/chat', chatRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
