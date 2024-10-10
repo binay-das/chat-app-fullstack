@@ -5,125 +5,77 @@ import FormLabel from '@mui/material/FormLabel';
 import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-// import Visibility from '@mui/icons-material/Visibility';
-// import VisibilityOff from '@mui/icons-material/VisibilityOff';
-
+import axios from 'axios';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function SignUp() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [show, setShow] = useState(false);
-
     const [alertMessage, setAlertMessage] = useState('');
     const [alertSeverity, setAlertSeverity] = useState('');
-
     const [image, setImage] = useState(null);
-    const [pic, setPic] = useState();
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
-
-
-    const [showPassword, setShowPassword] = React.useState(false);
-    const handleClickShowPassword = () => setShowPassword((show) => !show);
-    const handleMouseDownPassword = (event) => {
-        event.preventDefault();
-    };
-
-    const handleMouseUpPassword = (event) => {
-        event.preventDefault();
-    };
-
-
-    const handleName = (e) => {
-        setName(e.target.value);
-    }
-
-    const handleEmail = (e) => {
-        setEmail(e.target.value);
-    }
-
-    const handlePassword = (e) => {
-        setPassword(e.target.value);
-    }
-
-    const handleConfirmPassword = (e) => {
-        setConfirmPassword(e.target.value);
-    }
-
-    const handleFile = (e) => {
-        setImage(e.target.files[0]);
-    }
-
-
-    const handleFileUpload = async (event) => {
-        const file = event.target.files[0];
-        const formData = new FormData();
-        formData.append('file', file);
-
-        await fetch('http://localhost:5000/upload', {
-            method: 'POST',
-            body: formData,
-            credentials: 'include', // To send cookies with the request
-        });
-    };
-
-
-
+    const handleName = (e) => setName(e.target.value);
+    const handleEmail = (e) => setEmail(e.target.value);
+    const handlePassword = (e) => setPassword(e.target.value);
+    const handleConfirmPassword = (e) => setConfirmPassword(e.target.value);
+    const handleFile = (e) => setImage(e.target.files[0]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
-        if (password != confirmPassword) {
-            // alert('Passwords do not match');
+        if (!name || !email || !password || !confirmPassword) {
+            setAlertMessage('All fields are required');
+            setAlertSeverity('error');
+            setLoading(false);
+            return;
+        }
+        if (password !== confirmPassword) {
             setAlertMessage('Passwords do not match');
             setAlertSeverity('error');
+            setLoading(false);
             return;
         }
 
         try {
-            const response = await fetch('http://localhost:8080/api', {
-                method: 'POST',
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('email', email);
+            formData.append('password', password);
+            if (image) formData.append('pic', image);
 
+            const config = {
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'multipart/form-data'
                 },
+            };
 
-                credentials: 'include',
+            const { data } = await axios.post('  ', formData, config);
 
-                body: JSON.stringify({
-                    name,
-                    email,
-                    password
-                })
+            localStorage.setItem('userInfo', JSON.stringify(data));
 
-            })
+            setAlertMessage('Registration Successful');
+            setAlertSeverity('success');
+            setLoading(false);
 
-            if (response.ok) {
-                setAlertMessage('Registration Successful');
-                setAlertSeverity('success');
-            } else {
-                const data = await response.json();
-                setAlertMessage(data.message || 'Error during registration');
-                setAlertSeverity('error');
-            }
-
+            // Redirect to another page after successful signup
+            navigate('/chats');
         } catch (error) {
-            console.error(`Error ${error}`);
-
-            setAlertMessage('An error occurred');
+            setLoading(false);
+            setAlertMessage('An error occurred during registration');
             setAlertSeverity('error');
+            console.error(`Error: ${error}`);
         }
-    }
+    };
+
     return (
         <Box component="form" onSubmit={handleSubmit} sx={{ minWidth: 400, mx: 'auto', p: 3, borderRadius: 2, boxShadow: 3 }}>
-
             {alertMessage && (
                 <Alert severity={alertSeverity}>
                     {alertSeverity === 'error' && <AlertTitle>Error</AlertTitle>}
@@ -134,31 +86,32 @@ export default function SignUp() {
 
             <Box sx={{ mb: 2 }}>
                 <FormLabel htmlFor="name">Enter your name</FormLabel>
-                <br />
-                <TextField value={name} onChange={handleName} id="name" label="Full name" variant="outlined" fullWidth required />
+                <TextField value={name} onChange={handleName} id="name" label="Full Name" variant="outlined" fullWidth />
             </Box>
+
             <Box sx={{ mb: 2 }}>
-                <FormLabel htmlFor="email">e-mail</FormLabel>
-                <br />
-                <TextField value={email} onChange={handleEmail} id="email" label="email" variant="outlined" fullWidth required />
+                <FormLabel htmlFor="email">E-mail</FormLabel>
+                <TextField value={email} onChange={handleEmail} id="email" label="Email" variant="outlined" fullWidth />
             </Box>
+
             <Box sx={{ mb: 2 }}>
                 <FormLabel htmlFor="password">Password</FormLabel>
-                <br />
-                <TextField value={password} onChange={handlePassword} id="password" label="password" variant="outlined" type='password' fullWidth required />
+                <TextField value={password} onChange={handlePassword} id="password" label="Password" variant="outlined" type="password" fullWidth />
             </Box>
+
             <Box sx={{ mb: 2 }}>
                 <FormLabel htmlFor="confirmPassword">Re-enter Password</FormLabel>
-                <br />
-                <TextField value={confirmPassword} onChange={handleConfirmPassword} id="confirmPassword" label="Confirm Password" variant="outlined" type='password' fullWidth required />
+                <TextField value={confirmPassword} onChange={handleConfirmPassword} id="confirmPassword" label="Confirm Password" variant="outlined" type="password" fullWidth />
             </Box>
-            
+
             <Box sx={{ mb: 2 }}>
                 <FormLabel htmlFor="pic">Profile Picture</FormLabel>
-                <br />
-                <TextField id="pic" variant="outlined" type='file' onChange={(e) => postDetails(e.target.files[0])} fullWidth required />
+                <TextField id="pic" variant="outlined" type="file" onChange={handleFile} fullWidth />
             </Box>
-            <Button variant="contained" type='submit' fullWidth>Sign Up</Button>
+
+            <Button variant="contained" type="submit" fullWidth disabled={loading}>
+                {loading ? 'Signing Up...' : 'Sign Up'}
+            </Button>
         </Box>
     );
 }
