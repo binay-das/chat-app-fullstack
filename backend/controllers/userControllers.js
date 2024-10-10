@@ -30,13 +30,21 @@ const registerUser = expressAsyncHandler(async (req, res) => {
 });
 
 const allUsers = expressAsyncHandler(async (req, res) => {
+    const keyword = req.query.search ? {
+        $or: [
+            { name: { $regex: req.query.search, $options: 'i' } },
+            { email: { $regex: req.query.search, $options: 'i' } },
+        ]
+    } : {};
 
+    const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
+    res.send(users);
 });
 
 const authUser = expressAsyncHandler(async (req, res) => {
-    const {email, password} = req.body;
+    const { email, password } = req.body;
 
-    const user = await User.findOne({email});
+    const user = await User.findOne({ email });
 
     if (user && (await user.matchPassword(password))) {
         res.json({
@@ -45,11 +53,11 @@ const authUser = expressAsyncHandler(async (req, res) => {
             email: user.email,
             pic: user.pic,
             token: generateToken(user._id),
-        }) 
+        })
     } else {
         res.status(401)
         throw new Error("Invalid email or user");
     }
 });
 
-module.exports = { registerUser, authUser };
+module.exports = { registerUser, authUser, allUsers };
