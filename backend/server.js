@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
-const userRoutes = require('./routes/userRoute');
+const userRoutes = require('./routes/userRoutes');
+const chatRoutes = require('./routes/chatRoutes');
 const connectToDB = require('./config/connect');
 const colors = require('colors');
 const { notFound, errorHandler } = require('./middlewares/errorMiddlewares');
