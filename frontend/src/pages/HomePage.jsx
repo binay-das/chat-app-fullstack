@@ -6,6 +6,9 @@ import Box from '@mui/material/Box';
 
 import LogIn from '../components/LogIn'
 import SignUp from '../components/SignUp'
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react'
+
 
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -37,15 +40,24 @@ function a11yProps(index) {
 }
 
 
-export default function HomePage({ handleLogIn  }) {
+export default function HomePage({ handleLogIn }) {
     const [value, setValue] = React.useState(0);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('userInfo'));
+        if (user) {
+            navigate('/chats');
+        }
+    }, [navigate]);
+
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', bgcolor: 'background.default'}}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', bgcolor: 'background.default' }}>
             <Box sx={{ width: '100%', maxWidth: 400 }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
                     <Tab label="Log In" {...a11yProps(0)} />

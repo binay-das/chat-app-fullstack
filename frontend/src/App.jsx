@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Header from './components/Header';
 import LogIn from './components/LogIn';
 import SignUp from './components/SignUp';
+import ChatPage from './pages/ChatPage';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -35,12 +36,15 @@ function App() {
   }
 
   return (
-   <>
-   <Router >
-      <Header isLoggedIn={isLoggedIn} handleLogOut={handleLogOut} />
-      <HomePage handleLogIn={handleLogIn} />
-      </Router>
-      </>
+    <>
+      {/* <Header isLoggedIn={isLoggedIn} handleLogOut={handleLogOut} />
+      <Routes>
+        <Route path="/" element={<HomePage handleLogIn={handleLogIn} />} />
+        <Route path="/login" element={<LogIn />} />
+        <Route path="/signup" element={<SignUp />} />
+      </Routes> */}
+      <ChatPage />
+    </>
   )
 }
 
