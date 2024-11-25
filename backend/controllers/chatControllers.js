@@ -1,6 +1,7 @@
 const expressAsyncHandler = require("express-async-handler");
 const Chat = require('../models/chatModel');
 const generateToken = require('../config/generateToken');
+const User = require("../models/userModel");
 
 const accessChats = expressAsyncHandler(async (req, res) => {
     const { userId } = req.body;
@@ -17,7 +18,7 @@ const accessChats = expressAsyncHandler(async (req, res) => {
             { users: { $elemMatch: { $eq: userId } } }
         ]
     }).populate("users", "-password").populate("latestMessage");
-    isChat = await UserActivation.populate(isChat, {
+    isChat = await User.populate(isChat, {
         path: 'latestMessage.sender',
         select: 'name pic email'
 
